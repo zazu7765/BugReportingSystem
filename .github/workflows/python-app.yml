@@ -36,7 +36,7 @@ jobs:
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Add directory to PYTHONPATH
       run: |
-          echo "export PYTHONPATH=${{ github.workspace }:\$PYTHONPATH" >> $GITHUB_ENV
+          echo "export PYTHONPATH=${{ github.workspace }}:\$PYTHONPATH" >> $GITHUB_ENV
     - name: Test with pytest
       run: |
         pytest
