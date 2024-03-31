@@ -4,9 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="cfaddb6b-9de5-48c3-bedb-59ee63f3ff64" name="Changes" comment="test authentication routes change and refactoring">
-      <change afterPath="$PROJECT_DIR$/tests/unit/test_utilities.py" afterDir="false" />
+    <list default="true" id="cfaddb6b-9de5-48c3-bedb-59ee63f3ff64" name="Changes" comment="github actions testing 4">
+      <change beforePath="$PROJECT_DIR$/.idea/BugReportingSystem.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/BugReportingSystem.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/unit/test_utilities.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/unit/test_utilities.py" afterDir="false" />
     </list>
     <list id="995dc1d1-79bb-4ae6-87b8-ff31ca71ae90" name="Changes by markpaul" comment="" />
     <option name="SHOW_DIALOG" value="false" />
@@ -37,6 +39,9 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
+  </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 8
 }</component>
@@ -50,8 +55,12 @@
   "keyToString": {
     "DefaultHtmlFileTemplate": "HTML File",
     "Flask server.BugReportingSystem.executor": "Run",
+    "Python tests.All Python Tests.executor": "Run",
     "Python tests.Python tests for test_app.test_index_not_logged_in.executor": "Run",
     "Python tests.Python tests for test_utilities.test_check_existing_employee_existing_user.executor": "Run",
+    "Python tests.Python tests for test_utilities.test_check_existing_employee_non_existing_user.executor": "Run",
+    "Python tests.Python tests for test_utilities.test_check_existing_employee_nonexisting_user.executor": "Run",
+    "Python tests.Python tests for tests.executor": "Run",
     "Python tests.Python tests for tests.test_auth.executor": "Run",
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
@@ -68,7 +77,7 @@
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
-  <component name="RunManager" selected="Python tests.Python tests for test_utilities.test_check_existing_employee_existing_user">
+  <component name="RunManager" selected="Python tests.All Python Tests">
     <configuration name="BugReportingSystem" type="Python.FlaskServer">
       <option name="flaskDebug" value="true" />
       <module name="BugReportingSystem" />
@@ -84,6 +93,22 @@
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
       <option name="launchJavascriptDebuger" value="false" />
+      <method v="2" />
+    </configuration>
+    <configuration name="All Python Tests" type="tests" factoryName="Autodetect" temporary="true">
+      <module name="BugReportingSystem" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/tests" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;tests&quot;" />
+      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
       <method v="2" />
     </configuration>
     <configuration name="Python tests for test_utilities.test_check_existing_employee_existing_user" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
@@ -102,26 +127,51 @@
       <option name="_new_targetType" value="&quot;PYTHON&quot;" />
       <method v="2" />
     </configuration>
-    <configuration name="Python tests for tests.test_auth" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
+    <configuration name="Python tests for test_utilities.test_check_existing_employee_non_existing_user" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
       <module name="BugReportingSystem" />
       <option name="ENV_FILES" value="" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/tests" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/tests/unit" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
       <option name="_new_additionalArguments" value="&quot;&quot;" />
-      <option name="_new_target" value="&quot;tests.test_auth&quot;" />
+      <option name="_new_target" value="&quot;test_utilities.test_check_existing_employee_non_existing_user&quot;" />
       <option name="_new_targetType" value="&quot;PYTHON&quot;" />
       <method v="2" />
     </configuration>
+    <configuration name="Python tests for tests.unit.test_utilities.test_check_existing_employee_non_existing_user" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
+      <module name="BugReportingSystem" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/tests/unit" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;tests.unit.test_utilities.test_check_existing_employee_non_existing_user&quot;" />
+      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
+      <method v="2" />
+    </configuration>
+    <list>
+      <item itemvalue="Flask server.BugReportingSystem" />
+      <item itemvalue="Python tests.Python tests for test_utilities.test_check_existing_employee_existing_user" />
+      <item itemvalue="Python tests.Python tests for test_utilities.test_check_existing_employee_non_existing_user" />
+      <item itemvalue="Python tests.All Python Tests" />
+      <item itemvalue="Python tests.Python tests for tests.unit.test_utilities.test_check_existing_employee_non_existing_user" />
+    </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Python tests.All Python Tests" />
+        <item itemvalue="Python tests.Python tests for test_utilities.test_check_existing_employee_non_existing_user" />
+        <item itemvalue="Python tests.Python tests for tests.unit.test_utilities.test_check_existing_employee_non_existing_user" />
         <item itemvalue="Python tests.Python tests for test_utilities.test_check_existing_employee_existing_user" />
-        <item itemvalue="Python tests.Python tests for tests.test_auth" />
       </list>
     </recent_temporary>
   </component>
@@ -147,7 +197,7 @@
       <workItem from="1710857221434" duration="406000" />
       <workItem from="1710857634442" duration="867000" />
       <workItem from="1710858505882" duration="4218000" />
-      <workItem from="1711748981390" duration="5657000" />
+      <workItem from="1711748981390" duration="10927000" />
     </task>
     <task id="LOCAL-00001" summary="initial commit">
       <option name="closed" value="true" />
@@ -197,11 +247,54 @@
       <option name="project" value="LOCAL" />
       <updated>1711755519934</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="github actions testing">
+      <option name="closed" value="true" />
+      <created>1711756417686</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1711756417686</updated>
+    </task>
+    <task id="LOCAL-00008" summary="github actions testing 2">
+      <option name="closed" value="true" />
+      <created>1711756495337</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1711756495337</updated>
+    </task>
+    <task id="LOCAL-00009" summary="github actions testing 3">
+      <option name="closed" value="true" />
+      <created>1711756517481</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1711756517481</updated>
+    </task>
+    <task id="LOCAL-00010" summary="github actions testing 4">
+      <option name="closed" value="true" />
+      <created>1711756641422</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1711756641422</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="initial commit" />
@@ -210,10 +303,14 @@
     <MESSAGE value="Refactor database models into their own files" />
     <MESSAGE value="Refactor registration functions into a utilities file" />
     <MESSAGE value="test authentication routes change and refactoring" />
-    <option name="LAST_COMMIT_MESSAGE" value="test authentication routes change and refactoring" />
+    <MESSAGE value="github actions testing" />
+    <MESSAGE value="github actions testing 2" />
+    <MESSAGE value="github actions testing 3" />
+    <MESSAGE value="github actions testing 4" />
+    <option name="LAST_COMMIT_MESSAGE" value="github actions testing 4" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/BugReportingSystem$BugReportingSystem.coverage" NAME="BugReportingSystem Coverage Results" MODIFIED="1711754719118" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/BugReportingSystem$.coverage" NAME=" Coverage Results" MODIFIED="1711755823717" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests/unit" />
+    <SUITE FILE_PATH="coverage/BugReportingSystem$BugReportingSystem.coverage" NAME="BugReportingSystem Coverage Results" MODIFIED="1711820983449" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/BugReportingSystem$.coverage" NAME=" Coverage Results" MODIFIED="1711828589211" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
   </component>
 </project>
