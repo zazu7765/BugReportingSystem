@@ -37,18 +37,18 @@ def create_app(testing=False):
         if request.method == 'POST':
             if form.validate_on_submit():
                 if check_existing_user(form.username.data):
-                    return render_template("register.html", form=form, error_message="Username already exists")
+                    error = 'Username already exists!'
+                elif check_existing_employee(form.employee_id.data):
+                    error = 'Employee ID already exists!'
+                else:
+                    user = User(username=form.username.data, email=form.email.data,
+                                password=hash_password(form.password.data),
+                                employee_id=form.employee_id.data)
+                    db.session.add(user)
+                    db.session.commit()
+                    return redirect(url_for('login'))
 
-                if check_existing_employee(form.employee_id.data):
-                    return render_template("register.html", form=form, error_message="Employee already exists")
-
-                user = User(username=form.username.data, email=form.email.data,
-                            password=hash_password(form.password.data),
-                            employee_id=form.employee_id.data)
-                db.session.add(user)
-                db.session.commit()
-                return redirect(url_for('login'))
-
+                return render_template("register.html", form=form, error_message= error)
             else:
                 return render_template("register.html", form=form, error_message=form.errors)
         return render_template('register.html', form=form)
