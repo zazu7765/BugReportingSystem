@@ -18,14 +18,15 @@ class User(db.Model, UserMixin):
         self.email = email
         self.employee_id = employee_id
         self.password = password
+
     def __repr__(self):
         return f'<User {self.username}>'
 
 
 class Sprint(db.Model):
     id: db.Column = db.Column(db.Integer, primary_key=True)
-    start_date: db.Column = db.Column(db.DateTime, nullable=False)
-    end_date: db.Column = db.Column(db.DateTime, nullable=False)
+    start_date: db.Column = db.Column(db.String(), nullable=False)
+    end_date: db.Column = db.Column(db.String(), nullable=False)
     name: db.Column = db.Column(db.String(), nullable=False)
     bugs = db.relationship('BugReport', backref='sprint', lazy=True)
 
@@ -40,7 +41,7 @@ class BugReport(db.Model):
     is_fixed: db.Column = db.Column(db.Boolean(), default=False)
     reason_for_close: db.Column = db.Column(db.String())
     created = db.Column(db.String(), default=datetime.utcnow, nullable=False)
-    archived_at = db.Column(db.DateTime, nullable=True)
+    archived_at = db.Column(db.String(), nullable=True)
 
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     sprint_id = db.Column(db.Integer, db.ForeignKey('sprint.id'), nullable=False)
