@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Bug</title>
+</head>
+<body>
+    <h1>{{ bug.number }}</h1>
+    <ul>
+        <li><a href="/">Home</a></li>
+    </ul>
+    <ul>
+        <li>{{ bug.bug_type }}</li>
+        <li>{{ bug.description }}</li>
+        <li>{{ bug.subscribed }}</li>
+        <li>{{ bug.is_open }}</li>
+        <li>{{ bug.is_fixed }}</li>
+        <li>{{ bug.reason_for_close }}</li>
+        <li>{{ bug.created }}</li>
+        <li>{{ bug.archived_at }}</li>
+        <li>{{ bug.sprint_id }}</li>
+
+    </ul>
+</body>
+</html>

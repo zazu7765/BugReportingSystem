@@ -39,11 +39,11 @@ class BugReport(db.Model):
     is_open: db.Column = db.Column(db.Boolean(), default=True)
     is_fixed: db.Column = db.Column(db.Boolean(), default=False)
     reason_for_close: db.Column = db.Column(db.String())
-    created = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
+    created = db.Column(db.String(), default=datetime.utcnow, nullable=False)
     archived_at = db.Column(db.DateTime, nullable=True)
 
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    sprint_id = db.Column(db.Integer, db.ForeignKey('sprint.id'), nullable=True)
+    sprint_id = db.Column(db.Integer, db.ForeignKey('sprint.id'), nullable=False)
 
     def __repr__(self):
         return f'<BugReport {self.report_number}>'
