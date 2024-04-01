@@ -113,7 +113,7 @@ def test_login_route_correct(client):
         'password': 'test_password'
     }, follow_redirects=True)
     assert response.status_code == 200
-    assert response.request.path == "/bugs"
+    assert response.request.path == "/"
 
 
 def test_login_route_incorrect(client):
