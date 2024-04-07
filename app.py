@@ -30,7 +30,7 @@ def create_app(testing=False):
     def home():
         if current_user.is_authenticated:
             return render_template("home.html")
-        return "hello world, we are running on " + db.engine.name + " with " + db.engine.url.__str__()
+        return render_template("default.html")#"hello world, we are running on " + db.engine.name + " with " + db.engine.url.__str__()
 
     @app.route('/register', methods=['GET', 'POST'])
     def register():
