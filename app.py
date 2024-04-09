@@ -5,7 +5,7 @@ from flask_login import login_user, login_required, logout_user, LoginManager, c
 from sqlalchemy import desc
 from werkzeug.security import check_password_hash
 
-from forms import RegistrationForm, LoginForm
+from forms import RegistrationForm, LoginForm, SprintForm, BugReportForm
 from models import User, db, BugReport
 from utilities import check_existing_employee, check_existing_user, hash_password
 
@@ -81,6 +81,31 @@ def create_app(testing=False):
     def bugs():
         return render_template('bugs.html',
                                bugs=BugReport.query.all())
+    
+    @app.route('/bug_report', methods=['GET', 'POST'])
+    def bug_report():
+        form = BugReportForm()  # Create the form obj
+        
+        if request.method == 'POST':
+            # Logic to process form submission
+            return redirect(url_for('bug_report'))  # Redirect back to the bug report page after submission
+            
+        # Render the bug report page and pass the form variable to the template
+        #with app.app_context():
+        return render_template('bug_report.html', form=form)
+    
+    @app.route('/sprint', methods=['GET', 'POST'])
+    def sprint():
+        form = SprintForm()  # Create the form obj
+        
+        if request.method == 'POST':
+            # Logic to process form submission
+            return redirect(url_for('sprint'))  # Redirect back to the bug report page after submission
+            
+        # Render the bug report page and pass the form variable to the template
+        #with app.app_context():
+        return render_template('sprint.html', form=form)
+       
 
     @app.route('/bugs/<int:bug_id>')
     @login_required
