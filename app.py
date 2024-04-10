@@ -5,9 +5,9 @@ from flask_login import login_user, login_required, logout_user, LoginManager, c
 from sqlalchemy import desc
 from werkzeug.security import check_password_hash
 
-from forms import RegistrationForm, LoginForm
-from models import User, db, BugReport
-from utilities import check_existing_employee, check_existing_user, hash_password
+from forms import RegistrationForm, LoginForm, SprintForm, BugReportForm
+from models import User, db, BugReport, Sprint
+from utilities import check_existing_employee, check_existing_user, hash_password, check_existing_bug_report, check_fixed_bug_report, check_open_bug_report, check_existing_sprint
 
 
 def create_app(testing=False):
@@ -81,7 +81,61 @@ def create_app(testing=False):
     def bugs():
         return render_template('bugs.html',
                                bugs=BugReport.query.all())
+    
+    @app.route('/bug_report', methods=['GET', 'POST'])
+    @login_required
+    def bug_report():
+        form = BugReportForm()  # Create the form obj
 
+        if request.method == 'POST':
+            if form.validate_on_submit():
+                if check_existing_bug_report(form.number.data): # Check if bug report exists
+                    error = 'Bug report already exists!' 
+                    if not check_open_bug_report(form.number.data): # Check is bug report is open
+                        error = 'Bug report is not open!'
+                    elif check_fixed_bug_report(form.number.data): # Check if bug report is fixed
+                        error = 'Bug report is fixed!'
+                else:
+                    if request.form.get('progress_notification') or request.form.get('update_notification'): # Check if checkboxes for subscription are checked
+                        bug_report = BugReport(number=form.report_number.data, bug_type=form.bug_type.data, # Create bug report accordingly
+                        description=form.bug_summary.data, subscribed=True, is_open=True, is_fixed=False,
+                        reason_for_close="", user_id=current_user.id, sprint_id=sprint.id)
+                    else:
+                        bug_report = BugReport(number=form.report_number.data, bug_type=form.bug_type.data, 
+                        description=form.bug_summary.data, subscribed=False, is_open=True, is_fixed=False,
+                        reason_for_close="", user_id=current_user.id, sprint_id=sprint.id)
+                    db.session.add(bug_report) # Add to database
+                    db.session.commit()
+                    # Logic to process form submission
+                    return redirect(url_for('bug_report'))  # Redirect back to the bug report page after submission
+        # Should return render templates here for errors...
+
+        # Render the bug report page and pass the form variable to the template
+        #with app.app_context():
+        return render_template('bug_report.html', form=form)
+    
+    @app.route('/sprint', methods=['GET', 'POST'])
+    @login_required
+    def sprint():
+        form = SprintForm()  # Create the form obj
+
+        if request.method == 'POST':
+            if form.validate_on_submit():
+                if check_existing_sprint(form.sprint_name.data): # Check for existing sprint
+                    error = 'Sprint already exists!'
+                else:
+                    sprint = Sprint(start_date=form.start_date.data, end_date=form.end_date.data, # Create sprint
+                                    name=form.sprint_name.data, bugs=BugReport.sprint_id)
+                    db.session.add(sprint) # Add to database
+                    db.session.commit()
+                # Logic to process form submission
+                return redirect(url_for('sprint'))  # Redirect back to the bug report page after submission
+            else:
+                return render_template("sprint.html", form=form, error_message=form.errors)
+        # Render the bug report page and pass the form variable to the template
+        #with app.app_context():
+        return render_template('sprint.html', form=form)
+    
     @app.route('/bugs/<int:bug_id>')
     @login_required
     def bug(bug_id):
