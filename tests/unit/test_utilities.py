@@ -2,7 +2,7 @@ import pytest
 
 from app import create_app
 from models import db, User
-from utilities import check_existing_employee, hash_password, check_existing_user
+from utilities import check_existing_employee, hash_password, check_existing_user, send_email
 
 
 @pytest.fixture
@@ -15,6 +15,25 @@ def client():
             yield client
             db.session.remove()
             db.drop_all()
+
+
+@pytest.fixture
+def mock_smtp(monkeypatch):
+    class MockSMTP:
+        def __init__(self, *args, **kwargs):
+            pass
+
+        def sendmail(self, *args, **kwargs):
+            pass
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, exc_type, exc_val, exc_tb):
+            pass
+
+    monkeypatch.setattr("utilities.smtplib.SMTP_SSL", MockSMTP)
+    return MockSMTP
 
 
 def test_check_existing_employee_pass(client):
@@ -53,3 +72,7 @@ def test_check_existing_username_pass(client):
 def test_check_existing_username_fail(client):
     result = check_existing_user('test_user')
     assert result is None
+
+
+def test_send_email(mock_smtp):
+    assert send_email('receiver@example.com', 'Test Subject', 'Test Body') is 1

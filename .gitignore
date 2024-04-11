@@ -20,3 +20,5 @@ instance/
 .idea/**/dynamic.xml
 .idea/**/uiDesigner.xml
 .idea/**/dbnavigator.xml
+.env
+/__pycache__
