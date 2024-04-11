@@ -75,4 +75,4 @@ def test_check_existing_username_fail(client):
 
 
 def test_send_email(mock_smtp):
-    assert send_email('receiver@example.com', 'Test Subject', 'Test Body') is 1
+    assert send_email('receiver@example.com', 'Test Subject', 'Test Body') == 1
