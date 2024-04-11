@@ -5,7 +5,8 @@ from werkzeug.security import generate_password_hash
 from models import User, BugReport, Sprint
 
 if not dotenv.load_dotenv():
-    print('.env file missing, please add it to root file directory')
+    print('..env file missing, please add it to root file directory')
+
 
 def check_existing_employee(employee_id):
     existing_employee = User.query.filter_by(employee_id=employee_id).first()
@@ -36,14 +37,18 @@ def check_existing_sprint(sprint_name):
     existing_sprint = Sprint.query.filter_by(name=sprint_name).first()
     return existing_sprint
 
+
 def check_date_in_sprint(date):
     existing_sprint = Sprint.query.filter(Sprint.start_date <= date, Sprint.end_date >= date).first()
     return existing_sprint
+
+
 def hash_password(password):
     return generate_password_hash(password, method='pbkdf2')
 
+
 def send_email(receiver_email, subject, body, smtp_server=None, sender_email=None, password=None):
-    port = 465
+    port = os.getenv('port') or 465
     smtp_server = smtp_server or os.getenv("smtp_server")
     sender_email = sender_email or os.getenv("sender_email")
     password = password or os.getenv("password")
@@ -69,4 +74,4 @@ def send_email(receiver_email, subject, body, smtp_server=None, sender_email=Non
 
 
 if __name__ == "__main__":
-    send_email("test@test.com", "test","this is a test, fear not citizen")
+    send_email("test@test.com", "test", "this is a test, fear not citizen")
