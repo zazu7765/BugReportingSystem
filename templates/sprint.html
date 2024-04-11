@@ -13,7 +13,7 @@
     {% if error_message %}
     <p style="color: red;">{{ error_message }}</p>
     {% endif %}
-    <form method="POST" action="{{ url_for('create_sprint')}}">
+    <form method="POST" action="{{ url_for('sprint')}}">
         {{ form.hidden_tag() }}
         <div>
             {{ form.sprint_name.label }} {{ form.sprint_name }}
