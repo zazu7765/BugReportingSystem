@@ -15,6 +15,7 @@
     {% endif %}
     <form method="POST" action="{{ url_for('bug_report')}}">
         {{ form.hidden_tag() }}
+
         <div>
             {{ form.report_number.label }} {{ form.report_number }}
         </div>
@@ -32,9 +33,15 @@
             <input type="checkbox" id="update_notification" name="update_notification">
             <label for="update_notification">Notify me about updates</label>
         </div>
+        {{ form.current_date}}
         <div>
             {{ form.submit() }}
         </div>
     </form>
+<script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('current_date').value = new Date().toISOString().slice(0, 10);
+        });
+    </script>
 </body>
 </html>

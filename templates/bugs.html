@@ -7,10 +7,11 @@
     <h1>List of Bugs</h1>
     <ul>
         <li><a href="/">Home</a></li>
+
     </ul>
     <ul>
         {% for bug in bugs %}
-            <li># {{ bug.number }}</li> 
+            <li><a href="{{ url_for('bugs')}}/{{ bug.number }}"># {{ bug.number }}</a></li>
         {% endfor %}
     </ul>
 </body>

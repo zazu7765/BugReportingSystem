@@ -7,7 +7,8 @@ from werkzeug.security import check_password_hash
 
 from forms import RegistrationForm, LoginForm, SprintForm, BugReportForm
 from models import User, db, BugReport, Sprint
-from utilities import check_existing_employee, check_existing_user, hash_password, check_existing_bug_report, check_fixed_bug_report, check_open_bug_report, check_existing_sprint
+from utilities import check_existing_employee, check_existing_user, hash_password, check_existing_bug_report, \
+    check_fixed_bug_report, check_open_bug_report, check_existing_sprint, check_date_in_sprint
 
 
 def create_app(testing=False):
@@ -96,15 +97,19 @@ def create_app(testing=False):
                     elif check_fixed_bug_report(form.report_number.data): # Check if bug report is fixed
                         error = 'Bug report is fixed!'
                 else:
-                    if request.form.get('progress_notification') or request.form.get('update_notification'): # Check if checkboxes for subscription are checked
-                        bug_report = BugReport(number=form.report_number.data, bug_type=form.bug_type.data, # Create bug report accordingly
-                        description=form.bug_summary.data, subscribed=True, is_open=True, is_fixed=False,
-                        reason_for_close="", user_id=current_user.id, sprint_id=1)
+                    check_sprint = check_date_in_sprint(form.current_date.data)
+                    if check_sprint:
+                        if request.form.get('progress_notification') or request.form.get('update_notification'): # Check if checkboxes for subscription are checked
+                            insert_bug_report = BugReport(number=form.report_number.data, bug_type=form.bug_type.data,  # Create bug report accordingly
+                                                          description=form.bug_summary.data, subscribed=True, is_open=True, is_fixed=False,
+                                                          reason_for_close="", user_id=current_user.id, sprint_id=check_sprint.id)
+                        else:
+                            insert_bug_report = BugReport(number=form.report_number.data, bug_type=form.bug_type.data,
+                                                          description=form.bug_summary.data, subscribed=False, is_open=True, is_fixed=False,
+                                                          reason_for_close="", user_id=current_user.id, sprint_id=check_sprint.id)
                     else:
-                        bug_report = BugReport(number=form.report_number.data, bug_type=form.bug_type.data, 
-                        description=form.bug_summary.data, subscribed=False, is_open=True, is_fixed=False,
-                        reason_for_close="", user_id=current_user.id, sprint_id=1)
-                    db.session.add(bug_report) # Add to database
+                        return render_template('bug_report.html', form=form, error_message="There is no sprint for this date yet, please create one!")
+                    db.session.add(insert_bug_report) # Add to database
                     db.session.commit()
                     # Logic to process form submission
                     return redirect(url_for('bug_report'))  # Redirect back to the bug report page after submission
