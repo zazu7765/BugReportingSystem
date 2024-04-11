@@ -4,15 +4,15 @@
     <title>Bug</title>
 </head>
 <body>
-    <h1>{{ bug.number }}</h1>
     <ul>
         <li><a href="/">Home</a></li>
         <li><a href="/bugs">Bugs</a></li>
     </ul>
+    <h1>Bug Report: #{{ bug.number }}</h1>
+
     <ul>
         <li>{{ bug.bug_type }}</li>
         <li>{{ bug.description }}</li>
-        <li>{{ bug.subscribed }}</li>
         <li>{{ bug.is_open }}</li>
         <li>{{ bug.is_fixed }}</li>
         <li>{{ bug.reason_for_close }}</li>
@@ -21,5 +21,11 @@
         <li>{{ bug.sprint_id }}</li>
 
     </ul>
+    <h2> Subscribed Users</h2>
+    <ul>
+            {% for user in bug.subscribers %}
+            <li>{{ user.username }} (ID: {{ user.employee_id }})</li>
+            {% endfor %}
+        </ul>
 </body>
 </html>

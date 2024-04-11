@@ -24,13 +24,11 @@ def check_existing_bug_report(number):
 
 
 def check_open_bug_report(number):
-    existing_open_report = BugReport.query.filter_by(number=number).is_open
-    return existing_open_report
+    return check_existing_bug_report(number).is_open
 
 
 def check_fixed_bug_report(number):
-    fixed_bug_report = BugReport.query.filter_by(number=number).is_fixed
-    return fixed_bug_report
+    return check_existing_bug_report(number).is_fixed
 
 
 def check_existing_sprint(sprint_name):

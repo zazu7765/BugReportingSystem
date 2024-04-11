@@ -10,9 +10,15 @@
         <li><a href="/">Home</a></li>
     </ul>
     <h2>Register</h2>
-    {% if error_message %}
-        <p style="color: red;">{{ error_message }}</p>
-        {% endif %}
+    {% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, message in messages %}
+      <div class="alert alert-{{ category }}">
+        {{ message }}
+      </div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
     <form method="POST" action="{{ url_for('register') }}">
         {{ form.hidden_tag() }}
         <div>

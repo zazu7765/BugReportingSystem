@@ -4,14 +4,21 @@
     <title>Bugs</title>
 </head>
 <body>
-    <h1>List of Bugs</h1>
+    <h1>Bug Tracker</h1>
     <ul>
         <li><a href="/">Home</a></li>
-
     </ul>
+    <h2> List of Sprints</h2>
+    <ul>
+        {% for sprint in sprints %}
+        <li>{{ sprint.name }} (from {{ sprint.start_date }} to {{ sprint.end_date }})</li>
+        {% endfor %}
+    </ul>
+
+    <h2> List of Bugs</h2>
     <ul>
         {% for bug in bugs %}
-            <li><a href="{{ url_for('bugs')}}/{{ bug.number }}"># {{ bug.number }}</a></li>
+            <li><a href="{{ url_for('bugs')}}/{{ bug.number }}"> {{ bug.number }} - {{ bug.bug_type }}</a></li>
         {% endfor %}
     </ul>
 </body>

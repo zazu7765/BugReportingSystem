@@ -6,42 +6,44 @@
     <title>Bug Reporting System</title>
 </head>
 <body>
-    <ul>
-        <li><a href="/">Home</a></li>
-    </ul>
-    <h1>Create a Bug Report</h1>
-    {% if error_message %}
-    <p style="color: red;">{{ error_message }}</p>
-    {% endif %}
-    <form method="POST" action="{{ url_for('bug_report')}}">
-        {{ form.hidden_tag() }}
+<ul>
+    <li><a href="/">Home</a></li>
+</ul>
+<h1>Create a Bug Report</h1>
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+{% for category, message in messages %}
+<div class="alert alert-{{ category }}">
+    {{ message }}
+</div>
+{% endfor %}
+{% endif %}
+{% endwith %}
+<form method="POST" action="{{ url_for('bug_report')}}">
+    {{ form.hidden_tag() }}
 
-        <div>
-            {{ form.report_number.label }} {{ form.report_number }}
-        </div>
-        <div>
-            {{ form.bug_type.label }} {{ form.bug_type }}
-        </div>
-        <div>
-            {{ form.bug_summary.label }} {{ form.bug_summary }}
-        </div>
-        <div>
-            <input type="checkbox" id="progress_notification" name="progress_notification">
-            <label for="progress_notification">Notify me about progress</label>
-        </div>
-        <div>
-            <input type="checkbox" id="update_notification" name="update_notification">
-            <label for="update_notification">Notify me about updates</label>
-        </div>
-        {{ form.current_date}}
-        <div>
-            {{ form.submit() }}
-        </div>
-    </form>
+    <div>
+        {{ form.report_number.label }} {{ form.report_number }}
+    </div>
+    <div>
+        {{ form.bug_type.label }} {{ form.bug_type }}
+    </div>
+    <div>
+        {{ form.bug_summary.label }} {{ form.bug_summary }}
+    </div>
+    <div>
+        <input type="checkbox" id="update_notification" name="update_notification">
+        <label for="update_notification">Notify me about updates</label>
+    </div>
+    {{ form.current_date}}
+    <div>
+        {{ form.submit() }}
+    </div>
+</form>
 <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            document.getElementById('current_date').value = new Date().toISOString().slice(0, 10);
-        });
-    </script>
+    document.addEventListener('DOMContentLoaded', function () {
+        document.getElementById('current_date').value = new Date().toISOString().slice(0, 10);
+    });
+</script>
 </body>
 </html>
