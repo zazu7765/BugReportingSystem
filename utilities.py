@@ -25,7 +25,7 @@ def check_fixed_bug_report(number):
     return fixed_bug_report
 
 def check_existing_sprint(sprint_name):
-    existing_sprint = Sprint.query.filter_by(sprint_name).first()
+    existing_sprint = Sprint.query.filter_by(name=sprint_name).first()
     return existing_sprint
 
 def hash_password(password):
