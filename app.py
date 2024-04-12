@@ -65,7 +65,7 @@ def create_app(testing=False):
                     login_user(user)
                     return redirect(url_for('home'))
                 flash('Invalid username or password', 'error')
-            flash(form.errors, 'error')
+            flash(form.errors.popitem()[0], 'error')
                 # return render_template('login.html', form=form, error_message='Invalid username or password')
         return render_template('login.html', form=form)
 
@@ -135,9 +135,9 @@ def create_app(testing=False):
                     error = 'Sprint already exists!'
                     flash(error, 'error')
                 else:
-                    sprint = Sprint(start_date=form.start_date.data, end_date=form.end_date.data,  # Create sprint
-                                    name=form.sprint_name.data, bugs=[])
-                    db.session.add(sprint)  # Add to database
+                    inserted_sprint = Sprint(start_date=form.start_date.data, end_date=form.end_date.data,  # Create sprint
+                                             name=form.sprint_name.data, bugs=[])
+                    db.session.add(inserted_sprint)  # Add to database
                     db.session.commit()
                 # Logic to process form submission
                 return redirect(url_for('sprint'))  # Redirect back to the bug report page after submission

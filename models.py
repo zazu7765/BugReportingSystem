@@ -20,8 +20,7 @@ class User(db.Model, UserMixin):
     email: db.Column = db.Column(db.String(), unique=True, nullable=False)
 
     subscribed_bug_reports = db.relationship('BugReport', secondary=bug_report_subscribers,
-                                             backref=db.backref('User', lazy='dynamic'),
-                                             overlaps='User, subscribed_bug_reports')
+                                             back_populates='subscribers')
 
     def __init__(self, username: str, employee_id: str, password: str, email: str):
         self.username = username
@@ -53,8 +52,7 @@ class BugReport(db.Model):
     archived_at = db.Column(db.String(), nullable=True)
 
     subscribers = db.relationship('User', secondary=bug_report_subscribers,
-                                  backref=db.backref('bug_report', lazy='dynamic'),
-                                  overlaps='User, subscribed_bug_reports')
+                                  back_populates='subscribed_bug_reports')
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     sprint_id = db.Column(db.Integer, db.ForeignKey('sprint.id'), nullable=False)
 
