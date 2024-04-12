@@ -12,8 +12,7 @@ from werkzeug.security import check_password_hash
 from forms import RegistrationForm, LoginForm, SprintForm, BugReportForm, ChangePasswordForm
 from models import User, db, BugReport, Sprint
 from utilities import check_existing_employee, check_existing_user, hash_password, check_existing_sprint, \
-    check_date_in_sprint, get_existing_user, \
-    check_existing_bug_report_by_number, send_email, check_existing_email
+    check_date_in_sprint, get_existing_user, check_existing_bug_report_by_number, send_email, check_existing_email
 
 
 def create_app(testing=False):
