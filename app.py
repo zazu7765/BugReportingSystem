@@ -150,6 +150,7 @@ def create_app(testing=False):
 
                         db.session.add(insert_bug_report)  # Add to database
                         db.session.commit()
+                        flash('Bug Report Created', 'success')
                         return redirect(url_for('bug_report'))  # Redirect back to the bug report page after submission
                     else:
                         flash("There is no sprint for this date yet, please create one!", 'error')
