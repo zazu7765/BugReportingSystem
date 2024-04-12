@@ -21,6 +21,7 @@
     {% endwith %}
     <form method="POST" action="{{ url_for('login')}}">
         {{ form.hidden_tag() }}
+
         <div>
             {{ form.username.label }} {{ form.username }}
         </div>
