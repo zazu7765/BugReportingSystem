@@ -26,6 +26,10 @@ def create_app(testing=False):
     def load_user(user_id):
         return User.query.get(int(user_id))
 
+    @login_manager.unauthorized_handler
+    def unauthorized_callback():
+        return redirect('/login?next=' + request.path)
+
     @app.route('/')
     def home():
         if current_user.is_authenticated:
@@ -63,10 +67,12 @@ def create_app(testing=False):
                 user = check_existing_user(form.username.data)
                 if user and check_password_hash(user.password, form.password.data):
                     login_user(user)
-                    return redirect(url_for('home'))
+                    return redirect(form.next.data) or redirect(url_for('home'))
                 flash('Invalid username or password', 'error')
-            flash(form.errors.popitem()[0], 'error')
             # return render_template('login.html', form=form, error_message='Invalid username or password')
+
+        form.next.default = request.args.get('next')
+        form.process()
         return render_template('login.html', form=form)
 
     @app.route('/logout')
@@ -153,7 +159,7 @@ def create_app(testing=False):
     def edit_bug_report(bug_report_id):
         report = check_existing_bug_report_by_id(bug_report_id)
         if report is None:
-            return redirect(url_for('bugs')+"/"+str(bug_report_id))
+            return redirect(url_for('bugs'))
 
         report_number = request.form.get('report_number')
         if report_number:
@@ -171,6 +177,7 @@ def create_app(testing=False):
         flash('Bug report updated successfully', 'success')
 
         return redirect(url_for('bugs')+"/"+str(bug_report_id))
+
     @app.route('/sprint', methods=['GET', 'POST'])
     @login_required
     def sprint():
