@@ -4,6 +4,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bug Reporting System</title>
+    <style>
+        /* Style for input error */
+        .input-error {
+            border: 2px solid red;
+        }
+        /* Style for alert messages */
+        .alert {
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+        .alert-error {
+            color: red;
+            background-color: #FFD2D2;
+        }
+        .alert-success {
+            color: blue;
+            background-color: #D2E0FF;
+        }
+    </style>
 </head>
 <body>
 <ul>
@@ -13,7 +32,7 @@
 {% with messages = get_flashed_messages(with_categories=true) %}
 {% if messages %}
 {% for category, message in messages %}
-<div class="alert alert-{{ category }}">
+<div class="alert alert-{{ category }} {{ 'alert-' + category }}">
     {{ message }}
 </div>
 {% endfor %}
@@ -21,21 +40,23 @@
 {% endwith %}
 <form method="POST" action="{{ url_for('bug_report')}}">
     {{ form.hidden_tag() }}
-
     <div>
-        {{ form.report_number.label }} {{ form.report_number }}
+        {{ form.report_number.label }} 
+        {{ form.report_number(class='input-error' if form.report_number.errors else '') }}
     </div>
     <div>
-        {{ form.bug_type.label }} {{ form.bug_type }}
+        {{ form.bug_type.label }} 
+        {{ form.bug_type(class='input-error' if form.bug_type.errors else '') }}
     </div>
     <div>
-        {{ form.bug_summary.label }} {{ form.bug_summary }}
+        {{ form.bug_summary.label }} 
+        {{ form.bug_summary(class='input-error' if form.bug_summary.errors else '') }}
     </div>
     <div>
         <input type="checkbox" id="update_notification" name="update_notification">
         <label for="update_notification">Notify me about updates</label>
     </div>
-    {{ form.current_date}}
+    {{ form.current_date }}
     <div>
         {{ form.submit() }}
     </div>

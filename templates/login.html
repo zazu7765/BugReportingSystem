@@ -4,6 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
+    <style>
+        .alert {
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+        .alert-error {
+            color: red;
+            background-color: #FFD2D2;
+        }
+        .alert-success {
+            color: blue;
+            background-color: #D2E0FF;
+        }
+    </style>
 </head>
 <body>
     <ul>
@@ -13,7 +27,7 @@
     {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
     {% for category, message in messages %}
-      <div class="alert alert-{{ category }}">
+      <div class="alert alert-{{ category }} {{ 'alert-' + category }}">
         {{ message }}
       </div>
     {% endfor %}

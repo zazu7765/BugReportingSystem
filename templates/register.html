@@ -4,41 +4,88 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register</title>
+    <style>
+        .input-error {
+            border: 2px solid red;
+        }
+        .alert {
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+        .alert-error {
+            color: red;
+            background-color: #FFD2D2;
+        }
+        .alert-success {
+            color: blue;
+            background-color: #D2E0FF;
+        }
+    </style>
 </head>
 <body>
 <ul>
-        <li><a href="/">Home</a></li>
-    </ul>
-    <h2>Register</h2>
-    {% with messages = get_flashed_messages(with_categories=true) %}
-  {% if messages %}
+    <li><a href="/">Home</a></li>
+</ul>
+<h2>Register</h2>
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
     {% for category, message in messages %}
-      <div class="alert alert-{{ category }}">
+    <div class="alert alert-{{ category }} {{ 'alert-' + category }}">
         {{ message }}
-      </div>
+    </div>
     {% endfor %}
-  {% endif %}
+{% endif %}
 {% endwith %}
-    <form method="POST" action="{{ url_for('register') }}">
-        {{ form.hidden_tag() }}
-        <div>
-            {{ form.username.label }} {{ form.username }}
-        </div>
-        <div>
-            {{ form.email.label }} {{ form.email }}
-        </div>
-        <div>
-            {{ form.employee_id.label }} {{ form.employee_id}}
-        </div>
-        <div>
-            {{ form.password.label }} {{ form.password }}
-        </div>
-        <div>
-            {{ form.confirm_password.label }} {{ form.confirm_password }}
-        </div>
-        <div>
-            {{ form.submit() }}
-        </div>
-    </form>
+<form method="POST" action="{{ url_for('register') }}">
+    {{ form.hidden_tag() }}
+    <div>
+        {{ form.username.label }} 
+        {{ form.username(class='input-error' if form.username.errors else '') }}
+        {% if form.username.errors %}
+            {% for error in form.username.errors %}
+            <div style="color: red;">{{ error }}</div>
+            {% endfor %}
+        {% endif %}
+    </div>
+    <div>
+        {{ form.email.label }} 
+        {{ form.email(class='input-error' if form.email.errors else '') }}
+        {% if form.email.errors %}
+            {% for error in form.email.errors %}
+            <div style="color: red;">{{ error }}</div>
+            {% endfor %}
+        {% endif %}
+    </div>
+    <div>
+        {{ form.employee_id.label }} 
+        {{ form.employee_id(class='input-error' if form.employee_id.errors else '') }}
+        {% if form.employee_id.errors %}
+            {% for error in form.employee_id.errors %}
+            <div style="color: red;">{{ error }}</div>
+            {% endfor %}
+        {% endif %}
+    </div>
+    <div>
+        {{ form.password.label }} 
+        {{ form.password(class='input-error' if form.password.errors else '') }}
+        {% if form.password.errors %}
+            {% for error in form.password.errors %}
+            <div style="color: red;">{{ error }}</div>
+            {% endfor %}
+        {% endif %}
+    </div>
+    <div>
+        {{ form.confirm_password.label }} 
+        {{ form.confirm_password(class='input-error' if form.confirm_password.errors else '') }}
+        {% if form.confirm_password.errors %}
+            {% for error in form.confirm_password.errors %}
+            <div style="color: red;">{{ error }}</div>
+            {% endfor %}
+        {% endif %}
+    </div>
+    <div>
+        {{ form.submit() }}
+    </div>
+</form>
 </body>
 </html>
