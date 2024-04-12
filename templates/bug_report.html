@@ -27,6 +27,8 @@
 <body>
 <ul>
     <li><a href="/">Home</a></li>
+    <li><a href="{{ url_for('sprint')}}">Create New Sprint</a></li>
+    <li><a href="{{ url_for('bugs')}}">View Bug Tracker</a></li>
 </ul>
 <h1>Create a Bug Report</h1>
 {% with messages = get_flashed_messages(with_categories=true) %}
