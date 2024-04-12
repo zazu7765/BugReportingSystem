@@ -67,11 +67,13 @@ def create_app(testing=False):
                 user = check_existing_user(form.username.data)
                 if user and check_password_hash(user.password, form.password.data):
                     login_user(user)
-                    return redirect(form.next.data) or redirect(url_for('home'))
+                    if form.next.data == '' or form.next.data is None:
+                        return redirect(url_for('home'))
+                    return redirect(form.next.data)
                 flash('Invalid username or password', 'error')
             # return render_template('login.html', form=form, error_message='Invalid username or password')
 
-        form.next.default = request.args.get('next')
+        form.next.default = request.args.get('next','')
         form.process()
         return render_template('login.html', form=form)
 
