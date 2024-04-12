@@ -11,7 +11,7 @@ from werkzeug.security import check_password_hash
 
 from forms import RegistrationForm, LoginForm, SprintForm, BugReportForm, ChangePasswordForm
 from models import User, db, BugReport, Sprint
-from utilities import check_existing_employee, check_existing_user, hash_password, check_existing_sprint, \
+from utilities import check_existing_employee, check_existing_username, hash_password, check_existing_sprint_by_name, \
     check_date_in_sprint, get_existing_user, check_existing_bug_report_by_number, send_email, check_existing_email
 
 
@@ -47,7 +47,7 @@ def create_app(testing=False):
         form = RegistrationForm()
         if request.method == 'POST':
             if form.validate_on_submit():
-                if check_existing_user(form.username.data):
+                if check_existing_username(form.username.data):
                     flash('Username already exists!', 'error')
                 elif check_existing_employee(form.employee_id.data):
                     flash('Employee ID already exists!', 'error')
@@ -73,7 +73,7 @@ def create_app(testing=False):
         form = LoginForm()
         if request.method == 'POST':
             if form.validate_on_submit():
-                user = check_existing_user(form.username.data)
+                user = check_existing_username(form.username.data)
                 if user and check_password_hash(user.password, form.password.data):
                     login_user(user)
                     if form.next.data == '' or form.next.data is None:
@@ -247,7 +247,7 @@ def create_app(testing=False):
 
         if request.method == 'POST':
             if form.validate_on_submit():
-                if check_existing_sprint(form.sprint_name.data):  # Check for existing sprint
+                if check_existing_sprint_by_name(form.sprint_name.data):  # Check for existing sprint
                     error = 'Sprint already exists!'
                     flash(error, 'error')
                 else:

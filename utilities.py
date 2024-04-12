@@ -17,7 +17,7 @@ def get_existing_user(user_id):
     return User.query.get(user_id)
 
 
-def check_existing_user(username):
+def check_existing_username(username):
     existing_user = User.query.filter_by(username=username).first()
     return existing_user
 
@@ -30,7 +30,7 @@ def check_existing_bug_report_by_number(number):
     return BugReport.query.filter_by(number=number).first()
 
 
-def check_existing_sprint(sprint_name):
+def check_existing_sprint_by_name(sprint_name):
     existing_sprint = Sprint.query.filter_by(name=sprint_name).first()
     return existing_sprint
 
