@@ -270,14 +270,20 @@ def create_app(testing=False):
         sprints = Sprint.query.all()
         sprints_sorted = sorted(sprints, key=lambda x: x.start_date, reverse=True)
 
-        sprint_names = [sprint.name for sprint in sprints_sorted]
-        bug_counts = [len(sprint.bugs) for sprint in sprints_sorted]
+        sprint_names = [f"{sprint.name} ({sprint.start_date} - {sprint.end_date})" for sprint in sprints_sorted]
+        open_bug_counts = [len([bug for bug in sprint.bugs if bug.is_open]) for sprint in sprints_sorted]
+        fixed_bug_counts = [len([bug for bug in sprint.bugs if bug.is_fixed]) for sprint in sprints_sorted]
+        total_bug_counts = [len(sprint.bugs) for sprint in sprints_sorted]
 
         fig = Figure()
         ax = fig.add_subplot(111)
-        ax.barh(sprint_names, bug_counts)
+        ax.bar(sprint_names, total_bug_counts, color='b', label='Total')
+        ax.bar(sprint_names, fixed_bug_counts, color='g', label='Fixed')
+        ax.bar(sprint_names, open_bug_counts, color='r', label='Open')
+
         ax.set_xlabel('Number of Bug Reports')
         ax.set_ylabel('Sprint Name')
+        ax.legend()
 
         canvas = FigureCanvas(fig)
         png_output = BytesIO()
