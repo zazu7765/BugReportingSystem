@@ -73,7 +73,7 @@ def create_app(testing=False):
                 flash('Invalid username or password', 'error')
             # return render_template('login.html', form=form, error_message='Invalid username or password')
 
-        form.next.default = request.args.get('next','')
+        form.next.default = request.args.get('next', '')
         form.process()
         return render_template('login.html', form=form)
 
@@ -99,15 +99,19 @@ def create_app(testing=False):
         logout_user()
         return redirect(url_for('home'))
 
-    @app.route('/success')
-    def success():
-        return "Successful registration!"
-
     @app.route('/bugs')
     @login_required
     def bugs():
         return render_template('bugs.html',
                                bugs=BugReport.query.all(), sprints=Sprint.query.all())
+
+    @app.route('/bugs/<int:bug_id>')
+    @login_required
+    def bug(bug_id):
+        bug_found = BugReport.query.filter_by(number=bug_id).first()
+        if bug_found is None:
+            abort(404)
+        return render_template('bug.html', bug=bug_found)
 
     @app.route('/bug_report', methods=['GET', 'POST'])
     @login_required
@@ -194,7 +198,7 @@ def create_app(testing=False):
         db.session.commit()
         flash('Bug report updated successfully', 'success')
 
-        return redirect(url_for('bugs')+"/"+str(bug_report_id))
+        return redirect(url_for('bugs') + "/" + str(bug_report_id))
 
     @app.route('/sprint', methods=['GET', 'POST'])
     @login_required
@@ -219,14 +223,6 @@ def create_app(testing=False):
         # Render the bug report page and pass the form variable to the template
         # with app.app_context():
         return render_template('sprint.html', form=form)
-
-    @app.route('/bugs/<int:bug_id>')
-    @login_required
-    def bug(bug_id):
-        bug_found = BugReport.query.filter_by(number=bug_id).first()
-        if bug_found is None:
-            abort(404)
-        return render_template('bug.html', bug=bug_found)
 
     return app
 

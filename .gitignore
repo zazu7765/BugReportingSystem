@@ -22,3 +22,4 @@ instance/
 .idea/**/dbnavigator.xml
 .env
 /__pycache__
+/.idea/
