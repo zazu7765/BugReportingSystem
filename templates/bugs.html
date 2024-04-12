@@ -9,8 +9,10 @@
         <li><a href="/">Home</a></li>
         <li><a href="{{ url_for('sprint')}}">Create New Sprint</a></li>
         <li><a href="{{ url_for('bug_report')}}">Create Bug Report</a></li>
+        <li><a href="{{ url_for('sprint_statistics')}}">View Sprint Statistics</a></li>
     </ul>
     <h2> List of Sprints</h2>
+
     <ul>
         {% for sprint in sprints %}
         <li>{{ sprint.name }} (from {{ sprint.start_date }} to {{ sprint.end_date }})</li>

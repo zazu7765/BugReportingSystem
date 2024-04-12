@@ -1,7 +1,12 @@
+import base64
 import secrets
 
 from flask import Flask, render_template, redirect, url_for, request, abort, flash
 from flask_login import login_user, login_required, logout_user, LoginManager, current_user
+from matplotlib.figure import Figure
+from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
+from io import BytesIO
+import matplotlib.pyplot as plt
 from werkzeug.security import check_password_hash
 
 from forms import RegistrationForm, LoginForm, SprintForm, BugReportForm, ChangePasswordForm
@@ -259,6 +264,28 @@ def create_app(testing=False):
         # Render the bug report page and pass the form variable to the template
         # with app.app_context():
         return render_template('sprint.html', form=form)
+
+    @app.route('/sprint_statistics', methods=['GET'])
+    @login_required
+    def sprint_statistics():
+        sprints = Sprint.query.all()
+        sprints_sorted = sorted(sprints, key=lambda x: x.start_date, reverse=True)
+
+        sprint_names = [sprint.name for sprint in sprints_sorted]
+        bug_counts = [len(sprint.bugs) for sprint in sprints_sorted]
+
+        fig = Figure()
+        ax = fig.add_subplot(111)
+        ax.barh(sprint_names, bug_counts)
+        ax.set_xlabel('Number of Bug Reports')
+        ax.set_ylabel('Sprint Name')
+
+        canvas = FigureCanvas(fig)
+        png_output = BytesIO()
+        canvas.print_png(png_output)
+
+        img_data = base64.b64encode(png_output.getvalue()).decode('utf-8')
+        return render_template('sprint_statistics.html', img_data=img_data)
 
     return app
 
