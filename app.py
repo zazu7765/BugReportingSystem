@@ -6,8 +6,8 @@ from werkzeug.security import check_password_hash
 
 from forms import RegistrationForm, LoginForm, SprintForm, BugReportForm
 from models import User, db, BugReport, Sprint
-from utilities import check_existing_employee, check_existing_user, hash_password, check_existing_bug_report, \
-    check_fixed_bug_report, check_open_bug_report, check_existing_sprint, check_date_in_sprint
+from utilities import check_existing_employee, check_existing_user, hash_password, check_existing_bug_report_by_id, \
+    check_fixed_bug_report, check_open_bug_report, check_existing_sprint, check_date_in_sprint, get_existing_user
 
 
 def create_app(testing=False):
@@ -66,7 +66,7 @@ def create_app(testing=False):
                     return redirect(url_for('home'))
                 flash('Invalid username or password', 'error')
             flash(form.errors.popitem()[0], 'error')
-                # return render_template('login.html', form=form, error_message='Invalid username or password')
+            # return render_template('login.html', form=form, error_message='Invalid username or password')
         return render_template('login.html', form=form)
 
     @app.route('/logout')
@@ -93,7 +93,7 @@ def create_app(testing=False):
         if request.method == 'POST':
             print(request.date)
             if form.validate_on_submit():
-                if check_existing_bug_report(form.report_number.data):  # Check if bug report exists
+                if check_existing_bug_report_by_id(form.report_number.data):  # Check if bug report exists
                     error = 'Bug report already exists!'
                     if not check_open_bug_report(form.report_number.data):  # Check is bug report is open
                         error = 'Bug report is not open!'
@@ -124,6 +124,53 @@ def create_app(testing=False):
                         flash("There is no sprint for this date yet, please create one!", 'error')
         return render_template('bug_report.html', form=form)
 
+    @app.route('/subscribe_bug_report/<int:bug_report_id>', methods=['POST'])
+    @login_required
+    def subscribe_bug_report(bug_report_id):
+        report = check_existing_bug_report_by_id(bug_report_id)
+        if report is None:
+            flash('Bug report not found', 'error')
+            return redirect(url_for('bugs') + "/" + str(bug_report_id))
+
+        user = get_existing_user(int(current_user.id))
+        if user is None:
+            flash('User not found', 'error')
+            return redirect(url_for('bugs') + "/" + str(bug_report_id))
+
+        if user in report.subscribers:
+            report.subscribers.remove(user)
+            db.session.commit()
+            flash('User unsubscribed successfully', 'success')
+        else:
+            report.subscribers.append(user)
+            db.session.commit()
+            flash('User subscribed successfully', 'success')
+
+        return redirect(url_for('bugs') + "/" + str(bug_report_id))
+
+    @app.route('/edit_bug_report/<int:bug_report_id>', methods=['POST'])
+    @login_required
+    def edit_bug_report(bug_report_id):
+        report = check_existing_bug_report_by_id(bug_report_id)
+        if report is None:
+            return redirect(url_for('bugs')+"/"+str(bug_report_id))
+
+        report_number = request.form.get('report_number')
+        if report_number:
+            report.number = report_number
+
+        bug_type = request.form.get('bug_type')
+        if bug_type:
+            report.bug_type = bug_type
+
+        description = request.form.get('description')
+        if description:
+            report.description = description
+
+        db.session.commit()
+        flash('Bug report updated successfully', 'success')
+
+        return redirect(url_for('bugs')+"/"+str(bug_report_id))
     @app.route('/sprint', methods=['GET', 'POST'])
     @login_required
     def sprint():
@@ -135,7 +182,8 @@ def create_app(testing=False):
                     error = 'Sprint already exists!'
                     flash(error, 'error')
                 else:
-                    inserted_sprint = Sprint(start_date=form.start_date.data, end_date=form.end_date.data,  # Create sprint
+                    inserted_sprint = Sprint(start_date=form.start_date.data, end_date=form.end_date.data,
+                                             # Create sprint
                                              name=form.sprint_name.data, bugs=[])
                     db.session.add(inserted_sprint)  # Add to database
                     db.session.commit()
@@ -150,7 +198,7 @@ def create_app(testing=False):
     @app.route('/bugs/<int:bug_id>')
     @login_required
     def bug(bug_id):
-        bug_found = BugReport.query.filter_by(id=bug_id).first()
+        bug_found = BugReport.query.filter_by(number=bug_id).first()
         if bug_found is None:
             abort(404)
         return render_template('bug.html', bug=bug_found)

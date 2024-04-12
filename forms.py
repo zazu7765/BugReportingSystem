@@ -1,7 +1,7 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, BooleanField, DateField, TextAreaField
+from wtforms import StringField, PasswordField, SubmitField, BooleanField, DateField, TextAreaField, validators
 from wtforms.fields.simple import HiddenField
-from wtforms.validators import DataRequired, Email, EqualTo
+from wtforms.validators import DataRequired, Email, EqualTo, Optional
 
 
 class RegistrationForm(FlaskForm):
@@ -20,7 +20,7 @@ class LoginForm(FlaskForm):
 
 
 class BugReportForm(FlaskForm):
-    current_date = HiddenField('Current Date',)
+    current_date = HiddenField('Current Date', )
     report_number = StringField('Report Number', validators=[DataRequired()])
     bug_type = StringField('Bug Type', validators=[DataRequired()])
     bug_summary = TextAreaField('Bug Summary', validators=[DataRequired()])

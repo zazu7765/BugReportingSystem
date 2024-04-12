@@ -13,22 +13,30 @@ def check_existing_employee(employee_id):
     return existing_employee
 
 
+def get_existing_user(userID):
+    return User.query.get(userID)
+
+
 def check_existing_user(username):
     existing_user = User.query.filter_by(username=username).first()
     return existing_user
 
 
-def check_existing_bug_report(number):
-    existing_bug_report = BugReport.query.filter_by(number=number).first()
+def check_existing_bug_report_by_id(id):
+    existing_bug_report = BugReport.query.get(id)
     return existing_bug_report
 
 
+def check_existing_bug_report_by_number(number):
+    existing_bug_report = BugReport.query.filter_by(number=number).first()
+
+
 def check_open_bug_report(number):
-    return check_existing_bug_report(number).is_open
+    return check_existing_bug_report_by_id(number).is_open
 
 
 def check_fixed_bug_report(number):
-    return check_existing_bug_report(number).is_fixed
+    return check_existing_bug_report_by_id(number).is_fixed
 
 
 def check_existing_sprint(sprint_name):

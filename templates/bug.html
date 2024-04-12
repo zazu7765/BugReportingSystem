@@ -4,28 +4,43 @@
     <title>Bug</title>
 </head>
 <body>
-    <ul>
-        <li><a href="/">Home</a></li>
-        <li><a href="/bugs">Bugs</a></li>
-    </ul>
-    <h1>Bug Report: #{{ bug.number }}</h1>
+<ul>
+    <li><a href="/">Home</a></li>
+    <li><a href="/bugs">Bugs</a></li>
+</ul>
+<h1>Bug Report: #{{ bug.number }}</h1>
+<h3>Bug Type: {{ bug.bug_type }}</h3>
+<p>Description: {{ bug.description }}</p>
 
-    <ul>
-        <li>{{ bug.bug_type }}</li>
-        <li>{{ bug.description }}</li>
-        <li>{{ bug.is_open }}</li>
-        <li>{{ bug.is_fixed }}</li>
-        <li>{{ bug.reason_for_close }}</li>
-        <li>{{ bug.created }}</li>
-        <li>{{ bug.archived_at }}</li>
-        <li>{{ bug.sprint_id }}</li>
 
-    </ul>
-    <h2> Subscribed Users</h2>
-    <ul>
-            {% for user in bug.subscribers %}
-            <li>{{ user.username }} (ID: {{ user.employee_id }})</li>
-            {% endfor %}
-        </ul>
+<h2> Subscribed Users</h2>
+<ul>
+    {% for user in bug.subscribers %}
+    <li>{{ user.username }} (ID: {{ user.employee_id }})</li>
+    {% endfor %}
+</ul>
+
+<form method="POST" action="{{ url_for('subscribe_bug_report', bug_report_id=bug.id) }}">
+    <button type="submit">Subscribe / Unsubscribe</button>
+</form>
+    <details>
+        <summary> Edit Bug Report</summary>
+        <form method="POST" action="{{ url_for('edit_bug_report', bug_report_id=bug.id) }}">
+            <div>
+                <label for="report_number">Report Number:</label>
+                <input type="text" id="report_number" name="report_number" value="{{ bug.report_number }}">
+            </div>
+            <div>
+                <label for="bug_type">Bug Type:</label>
+                <input type="text" id="bug_type" name="bug_type" value="{{ bug.bug_type }}">
+            </div>
+            <div>
+                <label for="description">Description:</label>
+                <textarea id="description" name="description">{{ bug.description }}</textarea>
+            </div>
+            <button type="submit">Save Changes</button>
+        </form>
+    </details>
+
 </body>
 </html>
