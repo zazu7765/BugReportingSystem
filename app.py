@@ -6,8 +6,9 @@ from werkzeug.security import check_password_hash
 
 from forms import RegistrationForm, LoginForm, SprintForm, BugReportForm, ChangePasswordForm
 from models import User, db, BugReport, Sprint
-from utilities import check_existing_employee, check_existing_user, hash_password, check_existing_bug_report_by_id, \
-    check_fixed_bug_report, check_open_bug_report, check_existing_sprint, check_date_in_sprint, get_existing_user
+from utilities import check_existing_employee, check_existing_user, hash_password, check_existing_sprint, \
+    check_date_in_sprint, get_existing_user, \
+    check_existing_bug_report_by_number, send_email, check_existing_email
 
 
 def create_app(testing=False):
@@ -46,6 +47,8 @@ def create_app(testing=False):
                     flash('Username already exists!', 'error')
                 elif check_existing_employee(form.employee_id.data):
                     flash('Employee ID already exists!', 'error')
+                elif check_existing_email(form.email.data):
+                    flash('Email already exists!', 'error')
                 else:
                     user = User(username=form.username.data, email=form.email.data,
                                 password=hash_password(form.password.data),
@@ -56,6 +59,8 @@ def create_app(testing=False):
 
                 # return render_template("register.html", form=form, error_message=error)
             else:
+                for error in form.errors:
+                    flash(error + ' formatting error', 'error')
                 return render_template("register.html", form=form, error_message=form.errors)
         return render_template('register.html', form=form)
 
@@ -121,13 +126,11 @@ def create_app(testing=False):
         if request.method == 'POST':
             print(request.date)
             if form.validate_on_submit():
-                if check_existing_bug_report_by_id(form.report_number.data):  # Check if bug report exists
+                if check_existing_bug_report_by_number(form.report_number.data) is not None:
+                    # Check if bug report exists
                     error = 'Bug report already exists!'
-                    if not check_open_bug_report(form.report_number.data):  # Check is bug report is open
-                        error = 'Bug report is not open!'
-                    elif check_fixed_bug_report(form.report_number.data):  # Check if bug report is fixed
-                        error = 'Bug report is fixed!'
                     flash(error, 'error')
+                    return redirect(url_for('bug_report'))
                 else:
                     check_sprint = check_date_in_sprint(form.current_date.data)
                     if check_sprint:
@@ -155,7 +158,7 @@ def create_app(testing=False):
     @app.route('/subscribe_bug_report/<int:bug_report_id>', methods=['POST'])
     @login_required
     def subscribe_bug_report(bug_report_id):
-        report = check_existing_bug_report_by_id(bug_report_id)
+        report = check_existing_bug_report_by_number(bug_report_id)
         if report is None:
             flash('Bug report not found', 'error')
             return redirect(url_for('bugs') + "/" + str(bug_report_id))
@@ -163,7 +166,7 @@ def create_app(testing=False):
         user = get_existing_user(int(current_user.id))
         if user is None:
             flash('User not found', 'error')
-            return redirect(url_for('bugs') + "/" + str(bug_report_id))
+            return redirect(url_for('bugs') + "/" + str(report.number))
 
         if user in report.subscribers:
             report.subscribers.remove(user)
@@ -174,12 +177,12 @@ def create_app(testing=False):
             db.session.commit()
             flash('User subscribed successfully', 'success')
 
-        return redirect(url_for('bugs') + "/" + str(bug_report_id))
+        return redirect(url_for('bugs') + "/" + str(report.number))
 
     @app.route('/edit_bug_report/<int:bug_report_id>', methods=['POST'])
     @login_required
     def edit_bug_report(bug_report_id):
-        report = check_existing_bug_report_by_id(bug_report_id)
+        report = check_existing_bug_report_by_number(bug_report_id)
         if report is None:
             return redirect(url_for('bugs'))
 
@@ -198,6 +201,38 @@ def create_app(testing=False):
         db.session.commit()
         flash('Bug report updated successfully', 'success')
 
+        return redirect(url_for('bugs') + "/" + str(bug_report_id))
+
+    @app.route('/bug_report/close/<int:bug_report_id>', methods=['POST'])
+    @login_required
+    def close_bug_report(bug_report_id):
+        report: BugReport = check_existing_bug_report_by_number(bug_report_id)
+        if report is None:
+            return redirect(url_for('bugs'))
+        if report.is_open and not report.is_fixed:
+            report.is_open = False
+            report.reason_for_close = request.form['close_reason']
+            db.session.commit()
+            flash('Bug report closed successfully', 'success')
+            for subscriber in report.subscribers:
+                send_email(subscriber.email, f"Bug report #{bug_report_id} is closed", f"Please see the bug report and reasoning below: \n\n{report.description}\n\nReason:\n\n{report.reason_for_close}")
+
+        else:
+            flash('Bug report is already closed or marked as fixed', 'error')
+        return redirect(url_for('bugs') + "/" + str(bug_report_id))
+
+    @app.route('/bug_report/fix/<int:bug_report_id>', methods=['POST'])
+    @login_required
+    def fix_bug_report(bug_report_id):
+        report: BugReport = check_existing_bug_report_by_number(bug_report_id)
+        if not report.is_fixed and report.is_open:
+            report.is_fixed = True
+            db.session.commit()
+            flash('Bug report marked as fixed', 'success')
+            for subscriber in report.subscribers:
+                send_email(subscriber.email, f"Bug report #{bug_report_id} is fixed", f"Please see the bug report below: \n\n{report.description}")
+        else:
+            flash('Bug report is already fixed or closed', 'error')
         return redirect(url_for('bugs') + "/" + str(bug_report_id))
 
     @app.route('/sprint', methods=['GET', 'POST'])

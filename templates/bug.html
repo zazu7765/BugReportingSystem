@@ -8,24 +8,67 @@
     <li><a href="/">Home</a></li>
     <li><a href="/bugs">Bugs</a></li>
 </ul>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    {% for category, message in messages %}
+      <div class="alert alert-{{ category }}">
+        {{ message }}
+      </div>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+
+
 <h1>Bug Report: #{{ bug.number }}</h1>
 <h3>Bug Type: {{ bug.bug_type }}</h3>
+<p>Status:
+    {% if bug.is_open %}
+    Open
+    {% elif bug.is_fixed %}
+    Fixed
+    {% else %}
+    Closed
+    {% endif %}
+</p>
 <p>Description: {{ bug.description }}</p>
 
 
 <h2> Subscribed Users</h2>
+
 <ul>
     {% for user in bug.subscribers %}
     <li>{{ user.username }} (ID: {{ user.employee_id }})</li>
     {% endfor %}
 </ul>
 
-<form method="POST" action="{{ url_for('subscribe_bug_report', bug_report_id=bug.id) }}">
+<form method="POST" action="{{ url_for('subscribe_bug_report', bug_report_id=bug.number) }}">
     <button type="submit">Subscribe / Unsubscribe</button>
 </form>
+<details>
+    <summary> Close or Fix Bug Report </summary>
+    <form method="POST" action="{{ url_for('close_bug_report', bug_report_id=bug.number) }}">
+    <div>
+        <label for="close_reason">Reason for Closing:</label>
+        <div>
+        <textarea id="close_reason" name="close_reason"></textarea>
+            </div>
+    </div>
+    <button type="submit">Close Bug Report</button>
+        <div style="margin-bottom: 10px"></div>
+
+</form>
+    <form method="POST" action="{{ url_for('fix_bug_report', bug_report_id=bug.number) }}">
+    <button type="submit">Mark as Fixed</button>
+</form>
+</details>
+
+
+
+
     <details>
         <summary> Edit Bug Report</summary>
-        <form method="POST" action="{{ url_for('edit_bug_report', bug_report_id=bug.id) }}">
+        <form method="POST" action="{{ url_for('edit_bug_report', bug_report_id=bug.number) }}">
             <div>
                 <label for="report_number">Report Number:</label>
                 <input type="text" id="report_number" name="report_number" value="{{ bug.report_number }}">

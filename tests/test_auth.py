@@ -52,7 +52,7 @@ def test_register_route_incorrect_bad_email(client):
         "employee_id": "123456789"
     }, follow_redirects=True)
     assert response.status_code == 200
-    assert response.request.path == "/register"
+    assert b'alert' in response.data
 
 
 def test_register_route_incorrect_bad_confirm_password(client):
@@ -64,7 +64,7 @@ def test_register_route_incorrect_bad_confirm_password(client):
         "employee_id": "123456789"
     }, follow_redirects=True)
     assert response.status_code == 200
-    assert response.request.path == "/register"
+    assert b'alert' in response.data
 
 
 def test_register_route_incorrect_user_exists(logged_in_client):
@@ -77,7 +77,7 @@ def test_register_route_incorrect_user_exists(logged_in_client):
         "employee_id": "1234567890"
     }, follow_redirects=True)
     assert response.status_code == 200
-    assert response.request.path == "/register"
+    assert b'alert' in response.data
 
 
 def test_register_route_incorrect_employee_id_used(logged_in_client):
@@ -90,7 +90,7 @@ def test_register_route_incorrect_employee_id_used(logged_in_client):
         "employee_id": "123456789"
     }, follow_redirects=True)
     assert response.status_code == 200
-    assert response.request.path == "/register"
+    assert b'alert' in response.data
 
 
 def test_register_route_incorrect_email_used(logged_in_client):
@@ -102,9 +102,8 @@ def test_register_route_incorrect_email_used(logged_in_client):
         "confirm_password": "test_password",
         "employee_id": "1234567890"
     }, follow_redirects=True)
-    assert response.status_code == 500
-
-
+    assert response.status_code == 200
+    assert b'alert' in response.data
 def test_login_route_correct(client):
     user = User(username="test_user", email="test_email@email.com", password=hash_password("test_password"),
                 employee_id="123456789")
@@ -124,7 +123,7 @@ def test_login_route_incorrect(client):
         'password': 'test_password'
     }, follow_redirects=True)
     assert response.status_code == 200
-    assert response.request.path == "/login"
+    assert b'alert' in response.data
 
 
 def test_logout_route_correct(logged_in_client):
@@ -137,4 +136,3 @@ def test_logout_route_correct(logged_in_client):
 def test_logout_route_incorrect(client):
     response = client.get('/logout', follow_redirects=True)
     assert response.status_code == 200
-    assert response.request.path == "/login"

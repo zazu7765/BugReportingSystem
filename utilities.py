@@ -21,6 +21,8 @@ def check_existing_user(username):
     existing_user = User.query.filter_by(username=username).first()
     return existing_user
 
+def check_existing_email(email):
+    return User.query.filter_by(email=email).first()
 
 def check_existing_bug_report_by_id(id):
     existing_bug_report = BugReport.query.get(id)
@@ -28,7 +30,7 @@ def check_existing_bug_report_by_id(id):
 
 
 def check_existing_bug_report_by_number(number):
-    existing_bug_report = BugReport.query.filter_by(number=number).first()
+    return BugReport.query.filter_by(number=number).first()
 
 
 def check_open_bug_report(number):
