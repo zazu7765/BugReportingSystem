@@ -7,7 +7,7 @@
     <h1>Home</h1>
     <ul>
         <li><a href="{{ url_for('logout') }}">Logout</a></li>
-        <li><a href="/reset">Change Password</a></li>
+        <li><a href="{{ url_for('change_password') }}">Change Password</a></li>
         <li><a href="{{ url_for('sprint')}}">Create New Sprint</a></li>
         <li><a href="{{ url_for('bug_report')}}">Create Bug Report</a></li>
         <li><a href="{{ url_for('bugs')}}">View Bug Tracker</a></li>

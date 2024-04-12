@@ -36,3 +36,9 @@ class SprintForm(FlaskForm):
     end_date = DateField('End Date', validators=[DataRequired()])
     description = StringField('Description', validators=[DataRequired()])
     submit = SubmitField('Create Sprint')
+
+class ChangePasswordForm(FlaskForm):
+    current_password = PasswordField('Current Password', validators=[validators.DataRequired()])
+    new_password = PasswordField('New Password', validators=[validators.DataRequired()])
+    confirm_password = PasswordField('Confirm Password', validators=[validators.DataRequired(), validators.EqualTo('new_password', message='Passwords must match')])
+    submit = SubmitField('Change Password')

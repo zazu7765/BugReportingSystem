@@ -4,7 +4,7 @@ from flask import Flask, render_template, redirect, url_for, request, abort, fla
 from flask_login import login_user, login_required, logout_user, LoginManager, current_user
 from werkzeug.security import check_password_hash
 
-from forms import RegistrationForm, LoginForm, SprintForm, BugReportForm
+from forms import RegistrationForm, LoginForm, SprintForm, BugReportForm, ChangePasswordForm
 from models import User, db, BugReport, Sprint
 from utilities import check_existing_employee, check_existing_user, hash_password, check_existing_bug_report_by_id, \
     check_fixed_bug_report, check_open_bug_report, check_existing_sprint, check_date_in_sprint, get_existing_user
@@ -76,6 +76,22 @@ def create_app(testing=False):
         form.next.default = request.args.get('next','')
         form.process()
         return render_template('login.html', form=form)
+
+    @app.route('/change_password', methods=['GET', 'POST'])
+    @login_required
+    def change_password():
+        form = ChangePasswordForm()
+
+        if form.validate_on_submit():
+            if not check_password_hash(current_user.password, form.current_password.data):
+                flash('Current password is incorrect', 'error')
+            else:
+                current_user.password = hash_password(form.new_password.data)
+                db.session.commit()
+                flash('Password changed successfully', 'success')
+                return redirect(url_for('home'))
+
+        return render_template('change_password.html', form=form)
 
     @app.route('/logout')
     @login_required
