@@ -44,6 +44,11 @@ Had two "sprints" to work on, auth was done in the first and other features in t
     password = "password"
     port = 465
     ```
+   
+4. Run tests:
+   ```bash
+    python -m pytest
+    ```
 4. Run the application:
 
    ```bash

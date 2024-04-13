@@ -98,7 +98,6 @@ def create_app(testing=False):
                 current_user.password = hash_password(form.new_password.data)
                 db.session.commit()
                 flash('Password changed successfully', 'success')
-                return redirect(url_for('home'))
 
         return render_template('change_password.html', form=form)
 
@@ -128,7 +127,6 @@ def create_app(testing=False):
         form = BugReportForm()  # Create the form obj
 
         if request.method == 'POST':
-            print(request.date)
             if form.validate_on_submit():
                 if check_existing_bug_report_by_number(form.report_number.data) is not None:
                     # Check if bug report exists
@@ -206,7 +204,7 @@ def create_app(testing=False):
         db.session.commit()
         flash('Bug report updated successfully', 'success')
 
-        return redirect(url_for('bugs') + "/" + str(bug_report_id))
+        return redirect(url_for('bugs') + "/" + str(report.number))
 
     @app.route('/bug_report/close/<int:bug_report_id>', methods=['POST'])
     @login_required
@@ -232,6 +230,7 @@ def create_app(testing=False):
         report: BugReport = check_existing_bug_report_by_number(bug_report_id)
         if not report.is_fixed and report.is_open:
             report.is_fixed = True
+            report.is_open = False
             db.session.commit()
             flash('Bug report marked as fixed', 'success')
             for subscriber in report.subscribers:
@@ -256,6 +255,7 @@ def create_app(testing=False):
                                              name=form.sprint_name.data, bugs=[])
                     db.session.add(inserted_sprint)  # Add to database
                     db.session.commit()
+                    flash("Sprint created succesfully!", 'success')
                 # Logic to process form submission
                 return redirect(url_for('sprint'))  # Redirect back to the bug report page after submission
             else:
