@@ -11,7 +11,7 @@ from werkzeug.security import check_password_hash
 
 from forms import RegistrationForm, LoginForm, SprintForm, BugReportForm, ChangePasswordForm
 from models import User, db, BugReport, Sprint
-from utilities import check_existing_employee, check_existing_user, hash_password, check_existing_sprint, \
+from utilities import check_existing_employee, check_existing_username, hash_password, check_existing_sprint_by_name, \
     check_date_in_sprint, get_existing_user, check_existing_bug_report_by_number, send_email, check_existing_email
 
 
@@ -47,7 +47,7 @@ def create_app(testing=False):
         form = RegistrationForm()
         if request.method == 'POST':
             if form.validate_on_submit():
-                if check_existing_user(form.username.data):
+                if check_existing_username(form.username.data):
                     flash('Username already exists!', 'error')
                 elif check_existing_employee(form.employee_id.data):
                     flash('Employee ID already exists!', 'error')
@@ -73,7 +73,7 @@ def create_app(testing=False):
         form = LoginForm()
         if request.method == 'POST':
             if form.validate_on_submit():
-                user = check_existing_user(form.username.data)
+                user = check_existing_username(form.username.data)
                 if user and check_password_hash(user.password, form.password.data):
                     login_user(user)
                     if form.next.data == '' or form.next.data is None:
@@ -98,7 +98,6 @@ def create_app(testing=False):
                 current_user.password = hash_password(form.new_password.data)
                 db.session.commit()
                 flash('Password changed successfully', 'success')
-                return redirect(url_for('home'))
 
         return render_template('change_password.html', form=form)
 
@@ -128,7 +127,6 @@ def create_app(testing=False):
         form = BugReportForm()  # Create the form obj
 
         if request.method == 'POST':
-            print(request.date)
             if form.validate_on_submit():
                 if check_existing_bug_report_by_number(form.report_number.data) is not None:
                     # Check if bug report exists
@@ -206,7 +204,7 @@ def create_app(testing=False):
         db.session.commit()
         flash('Bug report updated successfully', 'success')
 
-        return redirect(url_for('bugs') + "/" + str(bug_report_id))
+        return redirect(url_for('bugs') + "/" + str(report.number))
 
     @app.route('/bug_report/close/<int:bug_report_id>', methods=['POST'])
     @login_required
@@ -232,6 +230,7 @@ def create_app(testing=False):
         report: BugReport = check_existing_bug_report_by_number(bug_report_id)
         if not report.is_fixed and report.is_open:
             report.is_fixed = True
+            report.is_open = False
             db.session.commit()
             flash('Bug report marked as fixed', 'success')
             for subscriber in report.subscribers:
@@ -247,7 +246,7 @@ def create_app(testing=False):
 
         if request.method == 'POST':
             if form.validate_on_submit():
-                if check_existing_sprint(form.sprint_name.data):  # Check for existing sprint
+                if check_existing_sprint_by_name(form.sprint_name.data):  # Check for existing sprint
                     error = 'Sprint already exists!'
                     flash(error, 'error')
                 else:
@@ -256,6 +255,7 @@ def create_app(testing=False):
                                              name=form.sprint_name.data, bugs=[])
                     db.session.add(inserted_sprint)  # Add to database
                     db.session.commit()
+                    flash("Sprint created succesfully!", 'success')
                 # Logic to process form submission
                 return redirect(url_for('sprint'))  # Redirect back to the bug report page after submission
             else:
@@ -270,14 +270,20 @@ def create_app(testing=False):
         sprints = Sprint.query.all()
         sprints_sorted = sorted(sprints, key=lambda x: x.start_date, reverse=True)
 
-        sprint_names = [sprint.name for sprint in sprints_sorted]
-        bug_counts = [len(sprint.bugs) for sprint in sprints_sorted]
+        sprint_names = [f"{sprint.name} ({sprint.start_date} - {sprint.end_date})" for sprint in sprints_sorted]
+        open_bug_counts = [len([bug for bug in sprint.bugs if bug.is_open]) for sprint in sprints_sorted]
+        fixed_bug_counts = [len([bug for bug in sprint.bugs if bug.is_fixed]) for sprint in sprints_sorted]
+        total_bug_counts = [len(sprint.bugs) for sprint in sprints_sorted]
 
         fig = Figure()
         ax = fig.add_subplot(111)
-        ax.barh(sprint_names, bug_counts)
+        ax.bar(sprint_names, total_bug_counts, color='b', label='Total')
+        ax.bar(sprint_names, fixed_bug_counts, color='g', label='Fixed')
+        ax.bar(sprint_names, open_bug_counts, color='r', label='Open')
+
         ax.set_xlabel('Number of Bug Reports')
         ax.set_ylabel('Sprint Name')
+        ax.legend()
 
         canvas = FigureCanvas(fig)
         png_output = BytesIO()

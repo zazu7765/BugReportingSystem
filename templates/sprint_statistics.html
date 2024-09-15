@@ -7,9 +7,13 @@
     <title>Sprint Statistics</title>
 </head>
 <body>
-    <h1>Sprint Statistics</h1>
-    <div>
-        <img src="data:image/png;base64,{{ img_data }}" alt="Sprint Statistics">
-    </div>
+<ul>
+    <li><a href="/">Home</a></li>
+    <li><a href="{{ url_for('bugs')}}">View Bug Tracker</a></li>
+</ul>
+<h1>Sprint Statistics</h1>
+<div>
+    <img src="data:image/png;base64,{{ img_data }}" alt="Sprint Statistics">
+</div>
 </body>
 </html>

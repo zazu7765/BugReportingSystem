@@ -136,3 +136,4 @@ def test_logout_route_correct(logged_in_client):
 def test_logout_route_incorrect(client):
     response = client.get('/logout', follow_redirects=True)
     assert response.status_code == 200
+
